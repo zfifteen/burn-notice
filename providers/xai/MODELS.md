@@ -1,153 +1,275 @@
 # xAI / Grok Model Inventory
 
-This document catalogs known xAI Grok models, with a focus on technical traits relevant for prompt design and provider-level research.
+**Official Reference**: [xAI Models and Pricing](https://docs.x.ai/docs/models)
 
-- Provider: xAI (Grok)
-- API base: `https://api.x.ai` (OpenAI-compatible surface; also exposed via X API v2 in some environments)
-- Modalities: text, code, vision/multimodal (varies by model family)
-- Key dimensions tracked here:
-  - Model family and role (reasoning, fast, mini, code, legacy)
-  - Context window and output behavior
-  - Primary use cases and positioning
-  - Research priority (whether this repo will deeply characterize the model)
+This document catalogs xAI's officially documented Grok models, with a focus on technical traits relevant for prompt design and provider-level research. All information is sourced from xAI's official documentation.
+
+- **Provider**: xAI (Grok)
+- **API base**: `https://api.x.ai` ([OpenAI-compatible surface](https://docs.x.ai/docs/api-reference))
+- **Modalities**: text, code, vision/multimodal (varies by model family)
+- **Knowledge cutoff**: November 2024 for Grok 3 and Grok 4 models
+- **Documentation**: https://docs.x.ai/docs
 
 ---
 
 ## Legend
 
-- **Family**: High-level group (Grok 4.1 Fast, Grok 4, Grok 3, Grok 3 Mini, Grok 2 / legacy, Code / specialized).
-- **Tier**: Frontier reasoning vs. fast/cost-optimized vs. legacy.
-- **Context**: Approximate max context window, in tokens.
-- **Modality**: Text-only, code-tuned, or multimodal (vision / image).
-- **Role**: xAI's own positioning (general reasoning, fast chat, coding, long-context, etc.).
-- **Research**: Your intent for this repo (`core`, `secondary`, `document-only`).
+- **Model ID**: Official model identifier for API calls
+- **Family**: High-level group (Grok 4.1 Fast, Grok 4, Grok 3, Grok 2 / legacy, Code / specialized)
+- **Tier**: Frontier reasoning vs. fast/cost-optimized vs. legacy
+- **Context**: Maximum context window in tokens ([official docs](https://docs.x.ai/docs/models#context-window))
+- **Modalities**: Input/output capabilities (text, image, code)
+- **Capabilities**: Official feature flags from xAI
+- **Rate Limits**: Tokens per minute (tpm) and requests per minute (rpm)
+- **Pricing**: Input/output cost per million tokens ([pricing details](https://docs.x.ai/docs/models#model-pricing))
+- **Research**: Your intent for this repo (`core`, `secondary`, `document-only`)
 
 ---
 
-## Frontier 4.1 Fast family
+## Frontier 4.1 Fast Family
 
-These are the latest fast frontier models positioned for agentic workflows and tool use, with very large context windows.
+**Official Page**: [Grok 4.1 Fast](https://docs.x.ai/docs/models/grok-4-1-fast-reasoning)
+
+xAI describes these as "frontier multimodal models optimized specifically for high-performance agentic tool calling."
+
+**Shared Features**:
+- Function calling
+- Structured outputs
+- Reasoning
+- Lightning fast
+- Low cost
 
 ### `grok-4-1-fast-reasoning`
 
+**Official Docs**: [grok-4-1-fast-reasoning](https://docs.x.ai/docs/models/grok-4-1-fast-reasoning)
+
 - **Family**: Grok 4.1 Fast
 - **Tier**: Frontier reasoning, fast variant
-- **Context**: ~2M token context (frontier long-context tier)
-- **Modality**: Text, strong tool/agent support; multimodal support varies by deployment
+- **Context**: 2,000,000 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs, reasoning
+- **Rate Limits**: 4M tpm, 480 rpm
+- **Pricing**: $0.20 input / $0.50 output (per 1M tokens)
 - **Role**: High-end reasoning with fast, agentic tool calling for complex tasks and workflows
-- **Aliases**: `grok-4-1-fast`, `grok-4-1-fast-latest` (provider/SDK dependent)
 - **Research**: `core` (target for deep strengths/weaknesses mapping)
+
+**Key traits for prompt design**:
+- Optimized for [server-side tools](https://docs.x.ai/docs/guides/tools/overview) and agentic workflows
+- Supports [function calling](https://docs.x.ai/docs/guides/function-calling) and [structured outputs](https://docs.x.ai/docs/guides/structured-outputs)
+- Reasoning mode with extended thinking capability
 
 ### `grok-4-1-fast-non-reasoning`
 
+**Official Docs**: [grok-4-1-fast-non-reasoning](https://docs.x.ai/docs/models/grok-4-1-fast-non-reasoning)
+
 - **Family**: Grok 4.1 Fast
 - **Tier**: Fast / cost-optimized, minimal reasoning tokens
-- **Context**: ~2M token context
-- **Modality**: Text; tuned for quick, low-latency responses
+- **Context**: 2,000,000 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs (no extended reasoning)
+- **Rate Limits**: 4M tpm, 480 rpm
+- **Pricing**: $0.20 input / $0.50 output (per 1M tokens)
 - **Role**: High-throughput drafting, simple Q&A, low-latency applications without heavy chain-of-thought
-- **Aliases**: Sometimes exposed via simplified IDs or "fast" presets in SDKs
 - **Research**: `secondary` (characterize mainly in contrast to reasoning variant)
+
+**Key traits for prompt design**:
+- Same capabilities as reasoning variant but skips extended thinking
+- Faster response times for straightforward queries
+- Cost-effective for high-volume, simple interactions
 
 ---
 
-## Grok 4 family
+## Grok 4 Fast Family
 
-Grok 4 is the mainline reasoning model with strong multimodal and long-context capabilities.
+**Official Page**: [Models and Pricing](https://docs.x.ai/docs/models#model-pricing)
 
-### `grok-4-0709`
+These models balance speed with high reasoning performance for long-context workloads.
 
-- **Family**: Grok 4
-- **Tier**: Frontier reasoning
-- **Context**: ~256K tokens (with "extended context" pricing above ~128K)
-- **Modality**: Multimodal (text + images; some deployments emphasize coding)
-- **Role**: Flagship reasoning model for long-context tasks, analysis, and multimodal understanding
-- **Aliases**: Often surfaced as `grok-4` or via dated suffixes like `grok-4-YYYYMMDD`
-- **Research**: `core` (primary non-fast frontier target)
-
-### `grok-4-fast` (family)
+### `grok-4-fast-reasoning`
 
 - **Family**: Grok 4 Fast
 - **Tier**: Fast frontier reasoning / long-context
-- **Context**: ~2M tokens, with extended-context pricing tiers
-- **Modality**: Text and multimodal support (varies by integration)
+- **Context**: 2,000,000 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs, reasoning
+- **Rate Limits**: 4M tpm, 480 rpm
+- **Pricing**: $0.20 input / $0.50 output (per 1M tokens)
 - **Role**: Long-context workloads that need both speed and high reasoning performance (e.g., code bases, large documents)
-- **Aliases / variants**: Several dated or "fast" IDs (e.g., `grok-4-fast-YYYYMMDD`), plus provider-specific prefixes like `xai:grok-4-fast-reasoning`
-- **Research**: `core` (compare against 4.1 Fast and Grok 3 family)
+- **Research**: `core` (compare against 4.1 Fast and legacy models)
+
+### `grok-4-fast-non-reasoning`
+
+- **Family**: Grok 4 Fast
+- **Tier**: Fast / cost-optimized
+- **Context**: 2,000,000 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs (no extended reasoning)
+- **Rate Limits**: 4M tpm, 480 rpm
+- **Pricing**: $0.20 input / $0.50 output (per 1M tokens)
+- **Role**: Fast long-context processing without reasoning overhead
+- **Research**: `secondary`
 
 ---
 
-## Grok 3 family
+## Grok 4 (Standard)
 
-Grok 3 models are widely described as prior-generation frontier models with strong reasoning and large context, now partly superseded by Grok 4.x.
+### `grok-4-0709`
+
+**Official Docs**: [Models and Pricing](https://docs.x.ai/docs/models#model-pricing)
+
+- **Family**: Grok 4
+- **Tier**: Frontier reasoning (standard, non-fast)
+- **Context**: 256,000 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs, reasoning
+- **Rate Limits**: 2M tpm, 480 rpm
+- **Pricing**: $3.00 input / $15.00 output (per 1M tokens)
+- **Role**: Flagship reasoning model for long-context tasks, analysis, and multimodal understanding
+- **Research**: `core` (primary non-fast frontier target)
+
+**Migration Notes**: Per [official migration guide](https://docs.x.ai/docs/models#additional-information-regarding-models), Grok 4 is a reasoning-only model with no non-reasoning mode. Parameters `presencePenalty`, `frequencyPenalty`, `stop`, and `reasoning_effort` are not supported.
+
+---
+
+## Grok 3 Family
+
+**Official Page**: [Models and Pricing](https://docs.x.ai/docs/models#model-pricing)
+
+Grok 3 models are previous-generation frontier models, now partly superseded by Grok 4.x.
 
 ### `grok-3`
 
 - **Family**: Grok 3
 - **Tier**: Frontier reasoning (previous generation)
-- **Context**: Up to ~1M tokens in some deployments; commonly cited 1M window in public comparisons
-- **Modality**: Text; some multimodal variants exist under related IDs
-- **Role**: High-end reasoning and long-context, now a baseline for comparing Grok 4/4.1
-- **Aliases**: `grok-3-beta`, environment-specific aliases in SDKs and platforms
+- **Context**: 131,072 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs, reasoning
+- **Rate Limits**: 600 rpm
+- **Pricing**: $3.00 input / $15.00 output (per 1M tokens)
+- **Role**: High-end reasoning and long-context baseline for comparing Grok 4/4.1
 - **Research**: `secondary` (mainly for historical and regression comparisons)
-
-### `grok-3-fast`
-
-- **Family**: Grok 3
-- **Tier**: Fast / cost-optimized reasoning
-- **Context**: ~131K tokens in common hosted configurations
-- **Modality**: Text
-- **Role**: Fast flagship model for latency-sensitive apps that still need nontrivial reasoning
-- **Aliases**: `grok-3-fast-beta` and similar fast IDs
-- **Research**: `secondary`
 
 ### `grok-3-mini`
 
 - **Family**: Grok 3 Mini
 - **Tier**: Small / cost-efficient reasoning
-- **Context**: ~128–131K tokens, depending on provider integration
-- **Modality**: Text
-- **Role**: Lightweight general model, good for non-domain-heavy tasks and background reasoning with lower cost
-- **Aliases**: `grok-3-mini-beta` and integration-specific IDs
+- **Context**: 131,072 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs, reasoning
+- **Rate Limits**: 480 rpm
+- **Pricing**: $0.30 input / $0.50 output (per 1M tokens)
+- **Role**: Lightweight general model for non-domain-heavy tasks with lower cost
 - **Research**: `document-only` (useful as a point of reference, but not a core focus)
 
 ---
 
-## Grok 2 and earlier / legacy
+## Grok 2 and Legacy Models
 
-Older Grok models still appear in SDKs and third-party platforms, but are generally not recommended for new work.
+**Official Page**: [Models and Pricing](https://docs.x.ai/docs/models#model-pricing)
 
-### `grok-2`, `grok-2-vision-*`, `grok-beta`, etc.
+Older Grok models maintained for compatibility. Generally not recommended for new work.
+
+### `grok-2-vision-1212`
 
 - **Family**: Grok 2 / legacy
-- **Tier**: Legacy general models
-- **Context**: Typically ≤131K tokens depending on host platform
-- **Modality**: Text; some early VLM / vision endpoints under `*-vision-*` IDs
-- **Role**: Historical / compatibility endpoints; useful mainly for regression and migration testing
-- **Aliases**: `x-ai/grok-beta`, `grok-2-vision-1212`, and similar IDs via aggregators and SDKs
+- **Tier**: Legacy multimodal model
+- **Context**: 32,768 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs (legacy)
+- **Rate Limits**: 600 rpm
+- **Pricing**: $2.00 input / $10.00 output (per 1M tokens)
+- **Role**: Historical / compatibility endpoint; useful mainly for regression and migration testing
 - **Research**: `document-only`
 
 ---
 
-## Code-focused and specialized models
+## Code-Focused and Specialized Models
 
-xAI and third-party catalogs list code-optimized and specialized Grok variants.
+**Official Page**: [Models and Pricing](https://docs.x.ai/docs/models#model-pricing)
 
-### `grok-code-fast-*` and related IDs
+xAI provides code-optimized Grok variants for repository-level reasoning and tooling integrations.
+
+### `grok-code-fast-1`
+
+**Official Docs**: [Prompt Engineering for Grok Code](https://docs.x.ai/docs/guides/grok-code-prompt-engineering)
 
 - **Family**: Grok Code Fast
 - **Tier**: Fast code / reasoning hybrid
-- **Context**: Long-context (hundreds of thousands of tokens) in most hosted environments
-- **Modality**: Text, code-focused; optimized for repositories and tooling integrations
+- **Context**: 256,000 tokens
+- **Modalities**: Text input, image input → text output
+- **Capabilities**: Function calling, structured outputs, reasoning
+- **Rate Limits**: 2M tpm, 480 rpm
+- **Pricing**: $0.20 input / $1.50 output (per 1M tokens)
 - **Role**: Code completion, refactoring, repository-level reasoning, and agentic code tools
-- **Aliases**: Environment-specific names such as `xai:grok-code-fast-1` and dated variants
-- **Research**: `core` (for your use case, code-focused traits are relevant to prompt scaffolding)
+- **Research**: `core` (code-focused traits are highly relevant to prompt scaffolding)
+
+**Key traits for prompt design**:
+- Optimized for code understanding and generation
+- Strong repository-level context handling
+- See [official prompt engineering guide](https://docs.x.ai/docs/guides/grok-code-prompt-engineering) for code-specific best practices
 
 ---
 
-## Notes and open questions
+## Image Generation Models
 
-- **Exact context windows and pricing**: Values here are approximate and may vary by deployment; definitive numbers should be pulled from the current xAI docs or your own account.
-- **Modality details**: Vision/multimodal behavior can differ between Grok 4, 4 Fast, and 4.1 Fast; confirm in live testing and provider docs.
-- **Tool and agent capabilities**: 4.x and 4.1 Fast families are explicitly positioned for server-side tools and agentic workflows; later you may want a dedicated tool-capability matrix.
+**Official Page**: [Models and Pricing](https://docs.x.ai/docs/models#model-pricing)
 
-Once this inventory looks right to you, it can be converted into a structured JSON schema + instance with explicit fields for strengths, weaknesses, and recommended prompt tactics per model.
+### `grok-2-image-1212`
+
+**Official Docs**: [Image Generations Guide](https://docs.x.ai/docs/guides/image-generations)
+
+- **Family**: Grok 2 / Image Generation
+- **Tier**: Legacy image generation
+- **Context**: N/A (image output model)
+- **Modalities**: Text input → image output
+- **Rate Limits**: 300 rpm
+- **Pricing**: $0.07 per image
+- **Role**: Text-to-image generation
+- **Research**: `document-only`
+
+---
+
+## Additional Official Information
+
+### Model Capabilities Reference
+
+For detailed capability documentation, see:
+- [Function Calling](https://docs.x.ai/docs/guides/function-calling)
+- [Structured Outputs](https://docs.x.ai/docs/guides/structured-outputs)
+- [Chat with Reasoning](https://docs.x.ai/docs/guides/reasoning)
+- [Server-Side Tools](https://docs.x.ai/docs/guides/tools/overview)
+- [Live Search](https://docs.x.ai/docs/guides/live-search)
+- [Files and Document Search](https://docs.x.ai/docs/guides/files)
+
+### Pricing and Consumption
+
+- **Token Costs**: [Consumption and Rate Limits](https://docs.x.ai/docs/key-information/consumption-and-rate-limits)
+- **Tool Invocation Costs**: [Tools Pricing](https://docs.x.ai/docs/models#tools-pricing)
+- **Cached Prompt Tokens**: [Caching Details](https://docs.x.ai/docs/models#cached-prompt-tokens)
+
+### Migration and Compatibility
+
+- **Migrating to New Models**: [Migration Guide](https://docs.x.ai/docs/key-information/migrating-to-new-models)
+- **Grok 4 for Grok 3 Users**: [Grok 4 Information](https://docs.x.ai/docs/models#additional-information-regarding-models)
+- **Model Aliases**: [Alias Documentation](https://docs.x.ai/docs/models#model-aliases)
+
+### Key Technical Details
+
+- **Maximum image size**: 20 MiB
+- **Supported image formats**: JPG/JPEG, PNG
+- **No realtime data**: Models have no knowledge beyond training data unless [Live Search](https://docs.x.ai/docs/guides/live-search) is enabled
+- **Chat role flexibility**: No role order limitation; can mix `system`, `user`, `assistant` in any sequence
+
+---
+
+## Notes
+
+- **All data verified**: Every model, context window, pricing, and capability listed here is directly from [xAI's official documentation](https://docs.x.ai/docs/models) as of the last update to this file.
+- **No third-party sources**: This inventory excludes models not officially documented by xAI.
+- **Research priorities**: The "Research" field reflects this repository's focus on prompt engineering and technical characterization, not xAI's recommendations.
+- **Check for updates**: Model availability and pricing may change. Always verify against the [official models page](https://docs.x.ai/docs/models) and your [xAI Console](https://console.x.ai/team/default/models).
+
+---
+
+**Last verified**: December 28, 2025  
+**Official source**: https://docs.x.ai/docs/models
