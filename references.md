@@ -1,4 +1,4 @@
-# Bibliography of Literate Programming
+# Bibliography of Literate Programming Prior Art
 
 This document outlines key milestones and prior art in the history of "Literate Programming," a paradigm that emphasizes the creation of code as a human-readable narrative. While Donald Knuth formalized the term, the underlying philosophy of "code as literature" has evolved through various implementations and theoretical frameworks.
 
@@ -41,3 +41,11 @@ This document outlines key milestones and prior art in the history of "Literate 
         *   [IPython: A System for Interactive Scientific Computing (IEEE Xplore)](https://ieeexplore.ieee.org/document/4160251)
         *   [Project Jupyter - About Us](https://jupyter.org/about)
         *   [Fernando Pérez - Google Scholar Profile](https://scholar.google.com/citations?user=W9SjLzMAAAAJ)
+
+6.  **"HUML (Human-oriented Markup Language)" (YouTube / FOSS United, 2024)**
+    *   **Speaker:** Kailash Nadh
+    *   **Description:** In this presentation, Kailash Nadh (CTO, Zerodha) introduces HUML, a configuration language designed explicitly for human readability, contrasting it with formats like JSON and YAML which compromise between human and machine readability. While focused on data serialization rather than executable logic, the philosophy directly parallels Literate Programming: prioritizing the "human component" of the system. HUML enforces strict, prose-friendly syntax (e.g., elimination of bracketing noise, enforced indentation) to ensure that configuration files read as cleanly as a well-structured document. This represents a modern extension of the "literate" ethos into the domain of infrastructure-as-code and configuration management, arguing that even static data should respect the cognitive load of the human maintainer.
+    *   **Sources:**
+        *   [HUML Introduction - YouTube](https://www.youtube.com/watch?v=4M_tD1N14Ao)
+        *   [HUML Official Specification (huml.io)](https://huml.io)
+        *   [go-huml Repository (GitHub)](https://github.com/knadh/go-huml)
